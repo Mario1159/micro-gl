@@ -17,7 +17,6 @@ add_library(${PROJECT_NAME} INTERFACE)
 add_library(${PROJECT_NAME}::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
 
 # expose public include directory
-#target_include_directories(${PROJECT_NAME} INTERFACE ${PROJECT_SOURCE_DIR}/include)
 # define target includes for both direct build via add_subdirectory() and for
 # defined installation configuration to allow easier package find
 target_include_directories(
@@ -25,13 +24,15 @@ target_include_directories(
         $<BUILD_INTERFACE:${${PROJECT_NAME}_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 
-#target_link_libraries(${PROJECT_NAME} INTERFACE micro-alloc micro-tess)
-
 # Don't make the install target depend on the all target.
 set(CMAKE_SKIP_INSTALL_ALL_DEPENDENCY true)
 
-# add the targets examples project
-add_subdirectory(examples)
+option(MICROGL_BUILD_EXAMPLES "Build examples" ON)
+
+if(MICROGL_BUILD_EXAMPLES)
+    message("Building examples")
+    add_subdirectory(examples)
+endif()
 
 ### install
 install(TARGETS ${PROJECT_NAME}
